@@ -154,7 +154,7 @@ metadata:
   namespace: fiap-aso-g1
 data:
   blog.site.color: purple
-  blog.site.name: BLOG FIAP ASO GRUPO 1 (RM341515 RM340522 RM341648)
+  blog.site.name: BLOG FIAP ASO GRUPO 1 (RM341515 / RM340522 / RM341648)
 ---
 # -------------------------------------------------------------------------------------------------------------------------------
 # 6 - Application - Deplyment (blog-django-py) : blog-app-fiap-aso-g1

@@ -60,16 +60,17 @@
  -------------------------------------------------------------------------------------------------------------------------------
   Instruções para criar usuario e senha na aplicação:
  
-.   1. Acessar terminal do POD do deplyment "log-app-fiap-aso-g1"
+1. Acessar terminal do POD do deplyment "log-app-fiap-aso-g1"
 
          Exemplo   oc rsh $POD
 
-.   2. No terminal executar os comandos:
+2. No terminal executar os comandos:
 
-.        cp .s2i/action_hooks/setup .
-         ./setup 	
+      cp .s2i/action_hooks/setup .
+      
+      ./setup 	
 
-.    3. Seguir as intruções do terminal para criação do usuário. Exemplo
+3. Seguir as intruções do terminal para criação do usuário. Exemplo
 
              -----> Running Django database table migrations.
             Operations to perform:
@@ -85,7 +86,7 @@
              -----> Pre-loading Django database with blog posts.
              Installed 2 object(s) from 1 fixture(s)
 
- -------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------
 
  	
  	

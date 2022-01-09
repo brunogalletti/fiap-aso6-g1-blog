@@ -1,0 +1,315 @@
+# -------------------------------------------------------------------------------------------------------------------------------
+# FIAP - MBA Arquitetura de Soluções - ASO6
+# -------------------------------------------------------------------------------------------------------------------------------
+# Grupo 1 - ASO6
+# RM 341515 - Adriana Akemi Kira
+# RM 340522 - Bruno Galletti Souza
+# RM 341648 - Daniel Machado Reis
+# -------------------------------------------------------------------------------------------------------------------------------
+# Solution Sprint - Fase 4 - CONTAINERIZATION STRATEGY
+# Blog Deplyment
+# Full Deplyment YAML
+# -------------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------
+# 1 - Database - Secret : blog-db-fiap-aso-g1-secret
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: Secret
+apiVersion: v1
+metadata:
+  name: blog-db-fiap-aso-g1-secret
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-db-fiap-aso-g1
+    app.kubernetes.io/component: blog-db-fiap-aso-g1
+    app.kubernetes.io/instance: blog-db-fiap-aso-g1
+    template: postgresql-persistent-template
+stringData:
+  database-name: sampledb
+  database-password: sampledb
+  database-user: sampledb
+  database-url: postgresql://sampledb:sampledb@blog-db-fiap-aso-g1-service:5432/sampledb
+type: Opaque
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 2 - Database - Persistent Volume Claims (PVC) : blog-db-fiap-aso-g1-pvc
+# -------------------------------------------------------------------------------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blog-db-fiap-aso-g1-pvc
+  namespace: fiap-aso-g1
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+--- 
+# -------------------------------------------------------------------------------------------------------------------------------
+# 3 - Database - Deplyment (PostgreSQL) : blog-db-fiap-aso-g1
+# -------------------------------------------------------------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-db-fiap-aso-g1
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-app-fiap-aso-g1
+    template: postgresql-persistent-template
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/part-of: blog-app-fiap-aso-g1
+    app.kubernetes.io/component: blog-app-fiap-aso-g1
+    app.kubernetes.io/instance: blog-app-fiap-aso-g1
+spec:
+  selector:
+    matchLabels:
+      app: blog-db-fiap-aso-g1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog-db-fiap-aso-g1
+    spec:
+      strategy: Recreate
+      volumes:
+        - name: blog-db-fiap-aso-g1-data
+          persistentVolumeClaim:
+            claimName: blog-db-fiap-aso-g1-pvc
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          name: postgresql
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: blog-db-fiap-aso-g1-secret
+                  key: database-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blog-db-fiap-aso-g1-secret
+                  key: database-password
+            - name: POSTGRES_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: blog-db-fiap-aso-g1-secret
+                  key: database-name
+          securityContext:
+            capabilities: {}
+            privileged: false
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          image: postgres:latest
+          volumeMounts:
+            - name: blog-db-fiap-aso-g1-data
+              mountPath: /var/lib/pgsql/data:z
+              readOnly: false
+          terminationMessagePolicy: File
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+      command: ['/bin/sh', '-c', 'chmod -R 777 /var/lib/postgresql/data']
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 4 - Database - Service :  blog-db-fiap-aso-g1-service
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: Service
+apiVersion: v1
+metadata:
+  name: blog-db-fiap-aso-g1-service
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-app-fiap-aso-g1
+    template: postgresql-persistent-template
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: blog-app-fiap-aso-g1
+    app.kubernetes.io/component: blog-app-fiap-aso-g1
+    app.kubernetes.io/instance: blog-app-fiap-aso-g1
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: blog-db-fiap-aso-g1  
+  type: ClusterIP
+  sessionAffinity: None
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 5 - Application - Secret : blog-app-fiap-aso-g1-config-map
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: blog-app-fiap-aso-g1-config-map
+  namespace: fiap-aso-g1
+data:
+  blog.site.color: purple
+  blog.site.name: BLOG FIAP ASO GRUPO 1 (RM341515 RM340522 RM341648)
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 6 - Application - Deplyment (blog-django-py) : blog-app-fiap-aso-g1
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blog-app-fiap-aso-g1
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-app-fiap-aso-g1
+    app.kubernetes.io/component: blog-app-fiap-aso-g1
+    app.kubernetes.io/instance: blog-app-fiap-aso-g1
+    app.kubernetes.io/name: python
+    app.kubernetes.io/part-of: blog-app-fiap-aso-g1
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: 3.8-ubi7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-app-fiap-aso-g1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: blog-app-fiap-aso-g1
+        deploymentconfig: blog-app-fiap-aso-g1
+    spec:
+      containers:
+        - name: blog-app-fiap-aso-g1
+          image: 'openshiftkatacoda/blog-django-py:latest'
+          ports:
+            - containerPort: 8080
+              protocol: TCP 
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blog-db-fiap-aso-g1-secret
+                  key: database-url                         
+            - name: BLOG_SITE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: blog-app-fiap-aso-g1-config-map
+                  key: blog.site.name
+            - name: BLOG_BANNER_COLOR
+              valueFrom:
+                configMapKeyRef:
+                  name: blog-app-fiap-aso-g1-config-map
+                  key: blog.site.color
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+status:
+  observedGeneration: 2
+  replicas: 1
+  updatedReplicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 7 - Applciation - Service : blog-app-fiap-aso-g1-service
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: Service
+apiVersion: v1
+metadata:
+  name: blog-app-fiap-aso-g1-service
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-app-fiap-aso-g1
+    app.kubernetes.io/component: blog-app-fiap-aso-g1
+    app.kubernetes.io/instance: blog-app-fiap-aso-g1
+    app.kubernetes.io/name: python
+    app.kubernetes.io/part-of: blog-app-fiap-aso-g1
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: 3.8-ubi7
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: blog-app-fiap-aso-g1
+    deploymentconfig: blog-app-fiap-aso-g1
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 8 - Applciation - Route : blog-app-fiap-aso-g1-route
+# -------------------------------------------------------------------------------------------------------------------------------
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: blog-app-fiap-aso-g1-route
+  namespace: fiap-aso-g1
+  labels:
+    app: blog-app-fiap-aso-g1
+    app.kubernetes.io/component: blog-app-fiap-aso-g1
+    app.kubernetes.io/instance: blog-app-fiap-aso-g1
+    app.kubernetes.io/name: python
+    app.kubernetes.io/part-of: blog-app-fiap-aso-g1
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: 3.8-ubi7
+spec:
+  host: blog-app-fiap-aso-g1.apps.na46.prod.nextcle.com
+  to:
+    kind: Service
+    name: blog-app-fiap-aso-g1-service
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: blog-app-fiap-aso-g1.apps.na46.prod.nextcle.com
+      routerName: default
+      wildcardPolicy: None
+      routerCanonicalHostname: apps.na46.prod.nextcle.com
+---
+# -------------------------------------------------------------------------------------------------------------------------------
+# 9. Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
+# -------------------------------------------------------------------------------------------------------------------------------
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: blog-fiap-aso-g1-hpa
+  namespace: fiap-aso-g1
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: blog-fiap-aso-g1
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization

@@ -62,13 +62,13 @@
  
 1. Acessar terminal do POD do deplyment "log-app-fiap-aso-g1"
 
-         Exemplo   oc rsh $POD
+       Exemplo   oc rsh $POD
 
 2. No terminal executar os comandos:
 
-      cp .s2i/action_hooks/setup .
+       cp .s2i/action_hooks/setup .
       
-      ./setup 	
+       ./setup 	
 
 3. Seguir as intruções do terminal para criação do usuário. Exemplo
 

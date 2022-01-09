@@ -7,11 +7,11 @@
  
  Grupo 1 - ASO6
  
- RM 341515 - Adriana Akemi Kira
+    RM 341515 - Adriana Akemi Kira
  
- RM 340522 - Bruno Galletti Souza
+    RM 340522 - Bruno Galletti Souza
  
- RM 341648 - Daniel Machado Reis
+    RM 341648 - Daniel Machado Reis
  
 -------------------------------------------------------------------------------------------------------------------------------
  

@@ -22,29 +22,30 @@
  Full Deplyment YAML
  
 -------------------------------------------------------------------------------------------------------------------------------
- 
+
  
 -------------------------------------------------------------------------------------------------------------------------------
  
  Conteído do Deployment:
 
-1 - Database - Secret : blog-db-fiap-aso-g1-secret
 
-2 - Database - Persistent Volume Claims (PVC) : blog-db-fiap-aso-g1-pvc
+       1 - Database - Secret : blog-db-fiap-aso-g1-secret
 
-3 - Database - Deplyment (PostgreSQL) : blog-db-fiap-aso-g1
+       2 - Database - Persistent Volume Claims (PVC) : blog-db-fiap-aso-g1-pvc
 
-4 - Database - Service :  blog-db-fiap-aso-g1-service
+       3 - Database - Deplyment (PostgreSQL) : blog-db-fiap-aso-g1
 
-5 - Application - Secret : blog-app-fiap-aso-g1-config-map
+       4 - Database - Service :  blog-db-fiap-aso-g1-service
 
-6 - Application - Deplyment (blog-django-py) : blog-app-fiap-aso-g1
+       5 - Application - Secret : blog-app-fiap-aso-g1-config-map
 
-7 - Applciation - Service : blog-app-fiap-aso-g1-service
+       6 - Application - Deplyment (blog-django-py) : blog-app-fiap-aso-g1
 
-8 - Applciation - Route : blog-app-fiap-aso-g1-route
+       7 - Applciation - Service : blog-app-fiap-aso-g1-service
 
-9 - Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
+       8 - Applciation - Route : blog-app-fiap-aso-g1-route
+
+       9 - Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
 
 
 -------------------------------------------------------------------------------------------------------------------------------
@@ -60,39 +61,53 @@
 -------------------------------------------------------------------------------------------------------------------------------
   Execução do deployment
 
-      executar arquivo: 
-       full_deployment.yaml
+
+       - Opção 1: GitHub:
+
+       oc apply -f https://github.com/brunogalletti/fiap-aso6-g1-blog/blob/main/full_deployment.yaml
+
+
+       - Opção 2: arquivo local: (após download)
+
+       oc apply -f full_deployment.yaml
+
+
+       Observação: 
+       
+       Nome do namespace/projecto criado deve ser "fiap". 
+       Caso não seja a tag namespace no arquico yaml deve ser alterada
 
  -------------------------------------------------------------------------------------------------------------------------------
 
  -------------------------------------------------------------------------------------------------------------------------------
   Instruções para criar usuario e senha na aplicação:
+  
  
-1. Acessar terminal do POD do deplyment "log-app-fiap-aso-g1"
+       1. Acessar terminal do POD do deplyment "log-app-fiap-aso-g1"
 
-       Exemplo   oc rsh $POD
+              Exemplo   oc rsh $POD
 
-2. No terminal executar os comandos:
+       2. No terminal executar os comandos:
 
-       cp .s2i/action_hooks/setup .
-      
-       ./setup 	
+              cp .s2i/action_hooks/setup .
+       
+              ./setup 	
 
-3. Seguir as intruções do terminal para criação do usuário. Exemplo
+       3. Seguir as intruções do terminal para criação do usuário. Exemplo:
 
-             -----> Running Django database table migrations.
-            Operations to perform:
-              Apply all migrations: admin, auth, blog, contenttypes, sessions
-              Running migrations:
-              No migrations to apply.
-             -----> Running Django super user creation
-             Username (leave blank to use '1001880000'): fiap
-             Email address: fiap@fiap.com
-             Password: 
-             Password (again): 
-             Superuser created successfully.
-             -----> Pre-loading Django database with blog posts.
-             Installed 2 object(s) from 1 fixture(s)
+              -----> Running Django database table migrations.
+              Operations to perform:
+                     Apply all migrations: admin, auth, blog, contenttypes, sessions
+                     Running migrations:
+                     No migrations to apply.
+              -----> Running Django super user creation
+              Username (leave blank to use '1001880000'): fiap
+              Email address: fiap@fiap.com
+              Password: 
+              Password (again): 
+              Superuser created successfully.
+              -----> Pre-loading Django database with blog posts.
+              Installed 2 object(s) from 1 fixture(s)
 
 -------------------------------------------------------------------------------------------------------------------------------
 

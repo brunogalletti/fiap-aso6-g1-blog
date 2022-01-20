@@ -187,7 +187,6 @@ spec:
       containers:
         - name: blog-app-fiap-aso-g1
           image: 'openshiftkatacoda/blog-django-py'
-#          image: 'blog-app-fiap-aso-g1-imaage-stream'
           ports:
             - containerPort: 8080
               protocol: TCP 

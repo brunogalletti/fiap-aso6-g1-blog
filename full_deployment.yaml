@@ -186,7 +186,8 @@ spec:
     spec:
       containers:
         - name: blog-app-fiap-aso-g1
-          image: 'openshiftkatacoda/blog-django-py:latest'
+          image: 'openshiftkatacoda/blog-django-py'
+#          image: 'blog-app-fiap-aso-g1-imaage-stream'
           ports:
             - containerPort: 8080
               protocol: TCP 
@@ -297,13 +298,13 @@ status:
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: blog-fiap-aso-g1-hpa
+  name: blog-app-fiap-aso-g1-hpa
   namespace: fiap-aso-g1-2
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: blog-fiap-aso-g1
+    name: blog-app-fiap-aso-g1
   minReplicas: 2
   maxReplicas: 10
   metrics:

@@ -44,7 +44,7 @@
 
 8 - Applciation - Route : blog-app-fiap-aso-g1-route
 
-9. Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
+9 - Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
 
 
 -------------------------------------------------------------------------------------------------------------------------------

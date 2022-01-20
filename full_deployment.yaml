@@ -17,7 +17,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: blog-db-fiap-aso-g1-secret
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-db-fiap-aso-g1
     app.kubernetes.io/component: blog-db-fiap-aso-g1
@@ -37,7 +37,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: blog-db-fiap-aso-g1-pvc
-  namespace: fiap-aso-g1-2
+  namespace: fiap
 spec:
   storageClassName: standard
   accessModes:
@@ -53,7 +53,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blog-db-fiap-aso-g1
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-app-fiap-aso-g1
     template: postgresql-persistent-template
@@ -126,7 +126,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: blog-db-fiap-aso-g1-service
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-app-fiap-aso-g1
     template: postgresql-persistent-template
@@ -151,7 +151,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: blog-app-fiap-aso-g1-config-map
-  namespace: fiap-aso-g1-2
+  namespace: fiap
 data:
   blog.site.color: purple
   blog.site.name: BLOG FIAP ASO GRUPO 1 (RM341515 / RM340522 / RM341648)
@@ -163,7 +163,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: blog-app-fiap-aso-g1
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-app-fiap-aso-g1
     app.kubernetes.io/component: blog-app-fiap-aso-g1
@@ -236,7 +236,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: blog-app-fiap-aso-g1-service
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-app-fiap-aso-g1
     app.kubernetes.io/component: blog-app-fiap-aso-g1
@@ -266,7 +266,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: blog-app-fiap-aso-g1-route
-  namespace: fiap-aso-g1-2
+  namespace: fiap
   labels:
     app: blog-app-fiap-aso-g1
     app.kubernetes.io/component: blog-app-fiap-aso-g1
@@ -298,7 +298,7 @@ apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: blog-app-fiap-aso-g1-hpa
-  namespace: fiap-aso-g1-2
+  namespace: fiap
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

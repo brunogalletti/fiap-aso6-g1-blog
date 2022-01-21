@@ -276,7 +276,7 @@ metadata:
     app.openshift.io/runtime: python
     app.openshift.io/runtime-version: 3.8-ubi7
 spec:
-  host: blog-app-fiap-aso-g1.apps.na46.prod.nextcle.com
+  host: blog-app-fiap-aso6-g1.apps.na46.prod.nextcle.com
   to:
     kind: Service
     name: blog-app-fiap-aso-g1-service
@@ -292,7 +292,7 @@ status:
       routerCanonicalHostname: apps.na46.prod.nextcle.com
 ---
 # -------------------------------------------------------------------------------------------------------------------------------
-# 9. Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
+# 9 - Application - Horizontal Pod Autoscalers (HPA) :  blog-app-fiap-aso-g1-hpa
 # -------------------------------------------------------------------------------------------------------------------------------
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler

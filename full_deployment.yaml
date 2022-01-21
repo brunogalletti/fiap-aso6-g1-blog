@@ -286,7 +286,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: blog-app-fiap-aso-g1.apps.na46.prod.nextcle.com
+    - host: blog-app-fiap-aso6-g1.apps.na46.prod.nextcle.com
       routerName: default
       wildcardPolicy: None
       routerCanonicalHostname: apps.na46.prod.nextcle.com
